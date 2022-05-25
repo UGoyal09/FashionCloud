@@ -1,5 +1,5 @@
 const HttpStatus = require('http-status-codes');
-
+const logger = require('../config/logger');
 const { Cache } = require('../models/index');
 const checkExpiry = require('../helpers/checkExpiry');
 const generateRandomString = require('../helpers/generateRandomStrings');
@@ -30,7 +30,7 @@ exports.getItem = (req, res, next) => {
         logger.info('Cache hit');
 
         // Generate a random value if item is expired
-        if (checkExpiry.isItemExpired(cachedItem)) {
+        if (checkExpiry.isItemExpired(cachedItem.expires)) {
           cachedItem.value = generateRandomString.generateRandomString();
         }
 
@@ -97,12 +97,16 @@ exports.setItem = (req, res, next) => {
  * DELETE /cache/:key
  * Delete an item from the cache
  */
-exports.deleteItem = (req, res, next) => {
+ exports.deleteItem = (req, res, next) => {
   const { key, } = req.params;
 
-  Cache.remove({ key, })
-    .then(() => {
-      res.status(HttpStatus.OK).end();
+  Cache.deleteOne({ key, })
+    .then((deleted) => {
+    if(deleted.deletedCount == 1){
+      res.status(HttpStatus.OK).send("Successfully deleted item");
+    }else{
+        res.status(HttpStatus.EXPECTATION_FAILED).send("Item Not deleted");
+    }
     }).catch(err => next(err));
 };
 
@@ -110,9 +114,9 @@ exports.deleteItem = (req, res, next) => {
  * DELETE /cache
  * Clean all items from the cache
  */
-exports.clearData = (req, res, next) => {
+ exports.clearData = (req, res, next) => {
   Cache.remove({})
     .then(() => {
-      res.status(HttpStatus.OK).end();
+      res.status(HttpStatus.OK).send("Succesfully deleted");
     }).catch(err => next(err));
 };
