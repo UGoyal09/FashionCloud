@@ -43,13 +43,13 @@ exports.getItem = (req, res, next) => {
       logger.info('Cache miss');
       const value = generateRandomString.generateRandomString();
 
-      const Cache = new Cache({
+      const cache = new Cache({
         key,
         value,
       });
 
-      Cache.save()
-        .then(() => res.status(HttpStatus.CREATED).json(Cache)).catch(err => next(err));
+      cache.save()
+        .then(() => res.status(HttpStatus.CREATED).json(cache)).catch(err => next(err));
     }).catch(err => next(err));
 };
 
