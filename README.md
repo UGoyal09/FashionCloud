@@ -63,12 +63,13 @@ npm start
 After the last command the app will be running on the port 8080 as a localhost and the APIS can be tested using **Postman**.
 
 **API**
+```
 http://localhost:8080/api/cache/getItemByKey/:key 
 http://localhost:8080/api/cache/getAllItems
 http://localhost:8080/api/cache/addAndUpdateItem/:key
 http://localhost:8080/api/cache/removeItem/:key
 http://localhost:8080/api/cache/clearItems/:key
-
+```
 
 >Utkarsh Goyal
 
